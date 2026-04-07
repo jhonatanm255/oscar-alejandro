@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useAdmin } from '../context/AdminContext';
 
 /* ── Travel route definitions (SVG viewBox 0 0 500 300) ──
    All routes stay on actual landmasses — mostly horizontal arcs.
@@ -65,6 +66,9 @@ const pins = [
 ];
 
 const AudienceSection = () => {
+  const { data } = useAdmin();
+  const { audience } = data;
+
   return (
     <section id="audiencia" className="py-24 px-8 overflow-hidden relative" style={{ background: 'rgba(255, 255, 255, 0.4)' }}>
       {/* Decorative subtle background pattern */}
@@ -110,18 +114,24 @@ const AudienceSection = () => {
           className="flex-1 w-full z-10"
         >
           <p className="text-sky-500 text-3xl mb-1" style={{ fontFamily: '"Caveat", cursive' }}>
-            nos ven desde todo el mundo
+            {audience.subtitle}
           </p>
           <h2 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-tight text-slate-900 mb-6">
-            Viajando por el Mundo
+            {audience.title}
           </h2>
           <p className="font-body text-slate-600 font-medium text-lg mb-12 max-w-lg leading-relaxed">
-            Nuestros videos cruzan fronteras y conectan con gente increíble que comparte esta locura por viajar. El 85% de la familia tiene entre 24 y 44 años.
+            {audience.description}
           </p>
           <div className="space-y-10">
-            <StatBar label="Estados Unidos" percentage={43} delay={0.2} color="from-cyan-500 to-blue-500" />
-            <StatBar label="México & LATAM" percentage={31} delay={0.3} color="from-amber-400 to-orange-500" />
-            <StatBar label="Europa" percentage={15} delay={0.4} color="from-emerald-400 to-teal-500" />
+            {audience.metrics.map((metric, i) => (
+              <StatBar 
+                key={metric.id}
+                label={metric.label} 
+                percentage={metric.percentage} 
+                delay={0.2 + (i * 0.1)} 
+                color={metric.color} 
+              />
+            ))}
           </div>
         </motion.div>
 
@@ -234,9 +244,9 @@ const AudienceSection = () => {
                   <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
                 </svg>
               </div>
-              <h3 className="font-display font-black text-7xl text-slate-900 mb-1 tracking-tighter">120+</h3>
+              <h3 className="font-display font-black text-7xl text-slate-900 mb-1 tracking-tighter">{audience.countriesCount}</h3>
               <p className="text-2xl text-sky-600 font-medium" style={{ fontFamily: '"Caveat", cursive' }}>
-                países alcanzados este año
+                {audience.countriesLabel}
               </p>
             </div>
           </div>

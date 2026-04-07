@@ -24,6 +24,18 @@ const DEFAULT_STATE = {
     { id: 2, title: 'Ruta del Desierto', tag: 'Exploración', desc: 'Nuestra aventura en todoterreno por el Sahara, descubriendo oasis escondidos.', image: 'https://images.unsplash.com/photo-1547481079-6b5d2daeb9f9?q=80&w=800&auto=format&fit=crop' },
     { id: 3, title: 'Japón Oculto', tag: 'Cultura', desc: 'Me enamoré descubriendo santuarios olvidados en Kioto. Te cuento por qué.', image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop' },
   ],
+  audience: {
+    subtitle: 'nos ven desde todo el mundo',
+    title: 'Viajando por el Mundo',
+    description: 'Nuestros videos cruzan fronteras y conectan con gente increíble que comparte esta locura por viajar. El 85% de la familia tiene entre 24 y 44 años.',
+    countriesCount: '120+',
+    countriesLabel: 'países alcanzados este año',
+    metrics: [
+      { id: 1, label: 'Estados Unidos', percentage: 43, color: 'from-cyan-500 to-blue-500' },
+      { id: 2, label: 'México & LATAM', percentage: 31, color: 'from-amber-400 to-orange-500' },
+      { id: 3, label: 'Europa', percentage: 15, color: 'from-emerald-400 to-teal-500' },
+    ]
+  }
 };
 
 const STORAGE_KEY = 'oscar_admin_data';
@@ -72,13 +84,30 @@ export function AdminProvider({ children }) {
     }));
   };
 
+  const updateAudience = (updates) => {
+    setData(prev => ({
+      ...prev,
+      audience: { ...prev.audience, ...updates },
+    }));
+  };
+
+  const updateAudienceMetric = (id, updates) => {
+    setData(prev => ({
+      ...prev,
+      audience: {
+        ...prev.audience,
+        metrics: prev.audience.metrics.map(m => m.id === id ? { ...m, ...updates } : m)
+      },
+    }));
+  };
+
   const resetToDefaults = () => {
     setData(DEFAULT_STATE);
     localStorage.removeItem(STORAGE_KEY);
   };
 
   return (
-    <AdminContext.Provider value={{ data, updateStats, updateGalleryImage, updatePelicula, updateExpedicion, resetToDefaults }}>
+    <AdminContext.Provider value={{ data, updateStats, updateGalleryImage, updatePelicula, updateExpedicion, updateAudience, updateAudienceMetric, resetToDefaults }}>
       {children}
     </AdminContext.Provider>
   );

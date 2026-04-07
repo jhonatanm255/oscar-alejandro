@@ -219,10 +219,67 @@ function ExpedicionesSection() {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Section: Viajando (Audience)
+// ──────────────────────────────────────────────────────────────────────────────
+function AudienceSectionAdmin() {
+  const { data, updateAudience, updateAudienceMetric } = useAdmin();
+
+  return (
+    <Card title="Viajando por el Mundo" icon={MapPin}>
+      <p className="text-gray-500 text-sm mb-6">Modifica los textos principales y las métricas de audiencia por región.</p>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="space-y-4">
+          <Input label="Subtítulo (Caveat font)" value={data.audience.subtitle} onChange={v => updateAudience({ subtitle: v })} />
+          <Input label="Título Principal" value={data.audience.title} onChange={v => updateAudience({ title: v })} />
+          <div className="mb-3">
+            <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Descripción</p>
+            <textarea
+              value={data.audience.description}
+              onChange={e => updateAudience({ description: e.target.value })}
+              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-3 text-sm outline-none focus:border-[#00BAFF] transition-colors h-24 resize-none"
+            />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <Input label="Contador de Países (ej: 120+)" value={data.audience.countriesCount} onChange={v => updateAudience({ countriesCount: v })} />
+          <Input label="Etiqueta del Contador" value={data.audience.countriesLabel} onChange={v => updateAudience({ countriesLabel: v })} />
+        </div>
+      </div>
+
+      <p className="text-white font-bold mb-4">Métricas por País / Región</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {data.audience.metrics.map((m) => (
+          <div key={m.id} className="bg-gray-800 rounded-xl p-5">
+            <Input
+              label="Etiqueta"
+              value={m.label}
+              onChange={v => updateAudienceMetric(m.id, { label: v })}
+            />
+            <div className="mb-3">
+              <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Porcentaje ({m.percentage}%)</p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={m.percentage}
+                onChange={e => updateAudienceMetric(m.id, { percentage: parseInt(e.target.value) })}
+                className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-[#00BAFF]"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Main Admin Panel
 // ──────────────────────────────────────────────────────────────────────────────
 const TABS = [
   { id: 'stats', label: 'Estadísticas', icon: BarChart2 },
+  { id: 'viajando', label: 'Viajando', icon: MapPin },
   { id: 'galeria', label: 'Galería', icon: Image },
   { id: 'peliculas', label: 'Películas', icon: Film },
   { id: 'expediciones', label: 'Expediciones', icon: MapPin },
@@ -275,6 +332,7 @@ function Dashboard({ onLogout }) {
       {/* Content */}
       <div className="max-w-6xl mx-auto px-6 py-10">
         {tab === 'stats' && <StatsSection />}
+        {tab === 'viajando' && <AudienceSectionAdmin />}
         {tab === 'galeria' && <GallerySection />}
         {tab === 'peliculas' && <PeliculasSection />}
         {tab === 'expediciones' && <ExpedicionesSection />}
